@@ -1,1 +1,191 @@
-[{"id":"c5182419.28b358","type":"Meraki CMX","z":"f7942863.7f1ea8","name":"","url":"/cmxDispatcher","settings":"3c535309.7c29cc","x":125,"y":134,"wires":[["54ac4cef.026744"]]},{"id":"54ac4cef.026744","type":"function","z":"f7942863.7f1ea8","name":"Dispatcher","func":"// This function will relay the msg.payload\n// to all of the listed URLs.\ndata = msg.payload;\nurls = flow.get('urls');\nmsg = {} // reset msg object\n\n// Iterate through each URL and send the payload\nfor (var x = 0; x < urls.length; x++){\n    msg.url = urls[x].url;\n    msg.name = urls[x].name;\n    msg.payload = data;\n    node.send(msg); \n}\n\nreturn msg;","outputs":1,"noerr":0,"x":150,"y":234,"wires":[["1492283b.f6cd08","df1e889b.570648"]]},{"id":"7f8db14.596945","type":"http request","z":"f7942863.7f1ea8","name":"","method":"POST","ret":"txt","url":"","tls":"","x":660,"y":230,"wires":[["b6e6bc03.8eab1"]]},{"id":"b6e6bc03.8eab1","type":"debug","z":"f7942863.7f1ea8","name":"cmxDispatcher - Response Payload","active":true,"console":"false","complete":"payload","x":592,"y":269,"wires":[]},{"id":"bc45ddd8.c467d","type":"comment","z":"f7942863.7f1ea8","name":"Meraki Location / CMX Dispatcher","info":"Cisco Meraki Wireless can provide location\nobservations that includes X,Y or GPS coordinates\nof WiFi and BLE devices. \n\nThe Meraki Dashboard is limited to 4 Post URLs, \nwhich is typically enough for a normal system. \nIn some scenarios, such as a lab environment\nor educational setting, you may want to have \nseveral more receivers.\n\nThis Node-RED flow will simply relay the JSON\nmessages receieved from Meraki to the list\nof URLs named in the function.","x":163,"y":41,"wires":[]},{"id":"31643ba4.8de684","type":"inject","z":"f7942863.7f1ea8","name":"","topic":"","payload":"testMessage","payloadType":"str","repeat":"","crontab":"","once":false,"x":129,"y":184,"wires":[["54ac4cef.026744"]]},{"id":"1492283b.f6cd08","type":"debug","z":"f7942863.7f1ea8","name":"cmxDispatcher - Request Object","active":true,"console":"false","complete":"true","x":252.5,"y":271,"wires":[]},{"id":"d8d2b45f.791c78","type":"function","z":"f7942863.7f1ea8","name":"Set POST URLs and Validator- UPDATE ME","func":"var validator = 123123123;\nvar urls = [\n    {\n        name: 'Dispatcher',\n        url: 'http://34.251.2.90:1880/cmx'\n    },\n    {\n        name: 'lab2',\n        url: 'http://34.251.109.180:1880/cmx'\n    },\n    {\n        name: 'lab3',\n        url: 'http://34.250.169.242:1880/cmx'\n    },\n    {\n        name: 'lab4',\n        url: 'http://34.251.108.59:1880/cmx'\n    },\n        {\n        name: 'lab5',\n        url: 'http://34.251.39.20:1880/cmx'\n    },\n    {\n        name: 'lab6',\n        url: 'http://34.249.56.148:1880/cmx'\n    },\n    {\n        name: 'lab7',\n        url: 'http://34.251.107.66:1880/cmx'\n    },\n    {\n        name: 'lab8',\n        url: 'http://34.249.133.51:1880/cmx'\n    },\n    {\n        name: 'lab9',\n        url: 'http://34.250.197.68:1880/cmx'\n    },\n    {\n        name: 'lab10',\n        url: 'http://34.251.108.92:1880/cmx'\n    },\n    {\n        name: 'lab11',\n        url: 'http://34.250.110.67:1880/cmx'\n    },\n    {\n        name: 'lab12-medium',\n        url: 'http://34.250.100.141:1880/cmx'\n    },\n    {\n        name: 'AWS Lambda ES Kibana',\n        url: 'https://lex9rs9qj8.execute-api.eu-west-1.amazonaws.com/prod/cmxreceiver-dynamodb'\n    }\n];\n\nflow.set('urls',urls);\nflow.set('validator',validator);\nmsg.payload = flow.get('urls');\nreturn msg;","outputs":1,"noerr":0,"x":442,"y":97,"wires":[["6a394b8.14a0ab4"]]},{"id":"1441590.8093aa7","type":"inject","z":"f7942863.7f1ea8","name":"Initialize POST URLs","topic":"","payload":"","payloadType":"date","repeat":"","crontab":"","once":true,"x":133.5,"y":95,"wires":[["d8d2b45f.791c78"]]},{"id":"6a394b8.14a0ab4","type":"debug","z":"f7942863.7f1ea8","name":"CMX POST URLs - Flow Context","active":false,"console":"false","complete":"payload","x":671.5,"y":138,"wires":[]},{"id":"d1102960.8def48","type":"comment","z":"f7942863.7f1ea8","name":"Write a Filter Here","info":"","x":388.5,"y":185,"wires":[]},{"id":"df1e889b.570648","type":"switch","z":"f7942863.7f1ea8","name":"apTag contains Susie","property":"payload.data.apTags","propertyType":"msg","rules":[{"t":"cont","v":"Susie","vt":"str"}],"checkall":"true","outputs":1,"x":387.5,"y":230,"wires":[["7f8db14.596945"]]},{"id":"3c535309.7c29cc","type":"meraki-cmx-settings","z":"","name":"CiscoLive DevNet - Berlin 2017 Production"}]
+[
+    {
+        "id": "a0c679f8.791248",
+        "type": "Meraki CMX",
+        "z": "7db4eb76.99fc44",
+        "name": "",
+        "url": "/cmxDispatcher",
+        "settings": "3c535309.7c29cc",
+        "x": 122,
+        "y": 145,
+        "wires": [
+            [
+                "341497d7.c7a678"
+            ]
+        ]
+    },
+    {
+        "id": "341497d7.c7a678",
+        "type": "function",
+        "z": "7db4eb76.99fc44",
+        "name": "Dispatcher",
+        "func": "// This function will relay the msg.payload\n// to all of the listed URLs.\ndata = msg.payload;\nurls = flow.get('urls');\nmsg = {} // reset msg object\n\n// Iterate through each URL and send the payload\nfor (var x = 0; x < urls.length; x++){\n    msg.url = urls[x].url;\n    msg.name = urls[x].name;\n    msg.payload = data;\n    node.send(msg); \n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 147,
+        "y": 245,
+        "wires": [
+            [
+                "8db2c036.e3609",
+                "f25825eb.656d08"
+            ]
+        ]
+    },
+    {
+        "id": "24d56f24.a88ea",
+        "type": "http request",
+        "z": "7db4eb76.99fc44",
+        "name": "",
+        "method": "POST",
+        "ret": "txt",
+        "url": "",
+        "tls": "",
+        "x": 657,
+        "y": 241,
+        "wires": [
+            [
+                "2278c42c.6ef94c"
+            ]
+        ]
+    },
+    {
+        "id": "2278c42c.6ef94c",
+        "type": "debug",
+        "z": "7db4eb76.99fc44",
+        "name": "cmxDispatcher - Response Payload",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 589,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "46dced77.02d5c4",
+        "type": "comment",
+        "z": "7db4eb76.99fc44",
+        "name": "Meraki Location / CMX Dispatcher",
+        "info": "Cisco Meraki Wireless can provide location\nobservations that includes X,Y or GPS coordinates\nof WiFi and BLE devices. \n\nThe Meraki Dashboard is limited to 4 Post URLs, \nwhich is typically enough for a normal system. \nIn some scenarios, such as a lab environment\nor educational setting, you may want to have \nseveral more receivers.\n\nThis Node-RED flow will simply relay the JSON\nmessages receieved from Meraki to the list\nof URLs named in the function.",
+        "x": 160,
+        "y": 52,
+        "wires": []
+    },
+    {
+        "id": "fab54f28.956cc",
+        "type": "inject",
+        "z": "7db4eb76.99fc44",
+        "name": "",
+        "topic": "",
+        "payload": "testMessage",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 126,
+        "y": 195,
+        "wires": [
+            [
+                "341497d7.c7a678"
+            ]
+        ]
+    },
+    {
+        "id": "8db2c036.e3609",
+        "type": "debug",
+        "z": "7db4eb76.99fc44",
+        "name": "cmxDispatcher - Request Object",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 249.5,
+        "y": 282,
+        "wires": []
+    },
+    {
+        "id": "cff76578.e2e128",
+        "type": "function",
+        "z": "7db4eb76.99fc44",
+        "name": "Set POST URLs and Validator- UPDATE ME",
+        "func": "// Add your CMX Location API receivers here\n\nvar validator = 123123123;\nvar urls = [\n    {\n        name: 'Dispatcher', // used for testing localhost\n        url: 'http://localhost:1880/cmx'\n    },\n    {\n        name: 'lab1',\n        url: 'http://localhost:1881/cmx'\n    },\n    {\n        name: 'lab2',\n        url: 'http://localhost:1882/cmx'\n    },\n    {\n        name: 'lab3',\n        url: 'http://localhost:1883/cmx'\n    }\n];\n\nflow.set('urls',urls);\nflow.set('validator',validator);\nmsg.payload = flow.get('urls');\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 439,
+        "y": 108,
+        "wires": [
+            [
+                "e7e785cb.170e48"
+            ]
+        ]
+    },
+    {
+        "id": "dd860d46.f44fc",
+        "type": "inject",
+        "z": "7db4eb76.99fc44",
+        "name": "Initialize POST URLs",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "x": 130.5,
+        "y": 106,
+        "wires": [
+            [
+                "cff76578.e2e128"
+            ]
+        ]
+    },
+    {
+        "id": "e7e785cb.170e48",
+        "type": "debug",
+        "z": "7db4eb76.99fc44",
+        "name": "CMX POST URLs - Flow Context",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 668.5,
+        "y": 149,
+        "wires": []
+    },
+    {
+        "id": "f1a2c9ca.248f78",
+        "type": "comment",
+        "z": "7db4eb76.99fc44",
+        "name": "Write a Filter Here",
+        "info": "",
+        "x": 385.5,
+        "y": 196,
+        "wires": []
+    },
+    {
+        "id": "f25825eb.656d08",
+        "type": "switch",
+        "z": "7db4eb76.99fc44",
+        "name": "apTag contains Susie",
+        "property": "payload.data.apTags",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "cont",
+                "v": "Susie",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 384.5,
+        "y": 241,
+        "wires": [
+            [
+                "24d56f24.a88ea"
+            ]
+        ]
+    },
+    {
+        "id": "3c535309.7c29cc",
+        "type": "meraki-cmx-settings",
+        "z": "",
+        "name": "CiscoLive DevNet"
+    }
+]
